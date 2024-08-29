@@ -5,5 +5,3 @@
     <link class="favicon" rel="icon" type="image/x-icon" href="">
     <title>Bienvenu sur Memory!</title> <!-- Mettre du PHP -->
 </head>
-
-    
