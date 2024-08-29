@@ -6,6 +6,8 @@
     <title>Bienvenu sur Memory!</title>
 </head>
 <body>
-    
+    <main>
+
+    </main>
 </body>
 </html>
