@@ -1,13 +1,22 @@
+<?php
+
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenu sur Memory!</title>
-</head>
-<body>
-    <main>
+<?php include '../includes/_head.php'; ?>
 
-    </main>
+<body>
+
+    <?php include '../includes/_header.php'; ?>
+
+        <main>
+
+        </main>
+
+    <?php include '../includes/_footer.php'; ?>
+
 </body>
 </html>
