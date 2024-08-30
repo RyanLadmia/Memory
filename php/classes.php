@@ -35,6 +35,11 @@ class deck{ // REPRESENTE LE PAQUET DE CARTE DU JEU
 
 }
 
+class user{ // REPRESENTE UN UTILISATEUR
+
+
+}
+
 
 
 
