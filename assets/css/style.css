@@ -1,0 +1,51 @@
+/* GENERAL SETTING */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: white;
+}
+
+/* HEADER */
+
+header {
+    background-color: #333;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.Navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.Navbar li {
+    margin: 0 150px;
+}
+
+.Navbar a {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: white;
+    background-color: #444;
+    border-radius: 5px;
+    font-size: 16px;
+    justify-content: space-between;
+}
+
+.Navbar a:hover {
+    background-color: #555;
+}
+
+
+/* FOOTER */

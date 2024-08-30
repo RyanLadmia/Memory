@@ -30,7 +30,7 @@ session_start();
                     <option value="11_sets">11 paires</option>
                     <option value="12_sets">12 paires</option>
                 </select><br>
-                <input type="submit" value="Lancer la partie">
+                <input type="submit" name="new_game" value="Lancer la partie">
             </form>
         </main>
 
