@@ -7,6 +7,9 @@ body {
     line-height: 1.6;
     background-color: white;
 }
+main{
+    padding-top: 100px;
+}
 
 /* HEADER */
 
@@ -49,3 +52,12 @@ header {
 
 
 /* FOOTER */
+
+
+/* PROFIL (!!! ATTENTION A NOMMER LES CLASSES DIFFEREMENT DE PROFIL) */
+.form-container {
+    display: none;
+}
+.form-container.active {
+    display: block;
+}

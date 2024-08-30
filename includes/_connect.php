@@ -1,6 +1,5 @@
-// CONNEXION A LA BASE DE DONNEE
 <?php
-
+// CONNEXION A LA BASE DE DONNEE
 class Database {
     private $db_server = "localhost";
     private $db_name = "memory";
