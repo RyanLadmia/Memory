@@ -1,7 +1,7 @@
 <?php
 
 // Inclu la classe database
-include '../includes/_connect.php';
+include __DIR__ . '/../includes/_connect.php';
 
 class user{ // REPRESENTE UN UTILISATEUR
     private $conn;
@@ -163,39 +163,108 @@ class user{ // REPRESENTE UN UTILISATEUR
         
 }
 
-class card{ // REPRESENTE UNE CARTE DU JEU
-
+class Card {
+    private $src;
     private $id;
-    public $Value;
-    public $IsVisible;
-    public $IsMatched;
 
-    public function flip(){
-
+    public function __construct($src) {
+        $this->src = $src;
+        $this->id = uniqid();
     }
 
-
-    public function match(){
-
+    public function getSrc() {
+        return $this->src;
     }
 
+    public function getId() {
+        return $this->id;
+    }
 }
 
 
-class deck{ // REPRESENTE LE PAQUET DE CARTE DU JEU
 
-    
+class MemoryGame {
+    private $cards = [];
+    private $flipped = [];
+    private $foundPairs = [];
+    private $attempts = 0;
 
-    public function shuffle(){
-
+    public function __construct($cardSources) {
+        $this->initializeGame($cardSources);
     }
 
-    public function drawPairs(){
-
+    private function initializeGame($cardSources) {
+        $this->cards = $this->mix($cardSources);
     }
 
+    private function mix($cardSources) {
+        $cardList = [];
+        foreach ($cardSources as $src) {
+            $cardList[] = new Card($src['src']);
+        }
+        $shuffledCards = array_merge($cardList, $cardList); 
+        shuffle($shuffledCards);
+        return $shuffledCards;
+    }
 
+    public function getCards() {
+        return $this->cards;
+    }
+
+    public function flipCard($index) {
+        if (!in_array($index, $this->flipped)) {
+            $this->flipped[] = $index;
+        }
+
+        if (count($this->flipped) == 2) {
+            $this->attempts++;
+            $firstCard = $this->cards[$this->flipped[0]];
+            $secondCard = $this->cards[$this->flipped[1]];
+
+            if ($firstCard->getSrc() === $secondCard->getSrc()) {
+                $this->foundPairs[] = $this->flipped[0];
+                $this->foundPairs[] = $this->flipped[1];
+            }
+
+            // Réinitialiser les cartes retournées
+            $this->flipped = [];
+        }
+    }
+
+    public function getAttempts() {
+        return $this->attempts;
+    }
+
+    public function getFoundPairs() {
+        return $this->foundPairs;
+    }
 }
+
+
+class MemoryGameController {
+    private $game;
+
+    public function __construct($cardSources) {
+        session_start();
+        if (!isset($_SESSION['memory_game'])) {
+            $this->game = new MemoryGame($cardSources);
+            $_SESSION['memory_game'] = $this->game;
+        } else {
+            $this->game = $_SESSION['memory_game'];
+        }
+    }
+
+    public function handleRequest() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['index'])) {
+            $this->game->flipCard((int)$_POST['index']);
+        }
+    }
+
+    public function getGame() {
+        return $this->game;
+    }
+}
+
 
 
 ?>
