@@ -1,9 +1,20 @@
 <?php
-session_star();
+
+// Inclu la classe database
+include 'php/_connect.php';
+
+class user{ // REPRESENTE UN UTILISATEUR
+    private $conn;
+
+    public function __construct();
+        // Cree une instance de la classe database et établi la connexion a la BDD
+        $database = new Database();
+        $this->conn = $database->connect();
+}
 
 class card{ // REPRESENTE UNE CARTE DU JEU
 
-    private $Id;
+    private $id;
     public $Value;
     public $IsVisible;
     public $IsMatched;
@@ -34,13 +45,6 @@ class deck{ // REPRESENTE LE PAQUET DE CARTE DU JEU
 
 
 }
-
-class user{ // REPRESENTE UN UTILISATEUR
-
-
-}
-
-
 
 
 ?>
