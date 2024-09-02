@@ -169,17 +169,17 @@ class MemoryGame {
     
     private function initializeGame($cardSources, $sets) {
         $cardSources = array_slice($cardSources, 0, $sets); // Limite le nombre de paires
-        $this->cards = $this->mix($cardSources);
+        $this->cards = $this->createCards($cardSources);
     }
 
-    private function mix($cardSources) {
+    private function createCards($cardSources) {
         $cardList = [];
         foreach ($cardSources as $src) {
             $cardList[] = new Card($src['src']);
         }
-        $shuffledCards = array_merge($cardList, $cardList); 
-        shuffle($shuffledCards);
-        return $shuffledCards;
+        $cards = array_merge($cardList, $cardList); // Crée des paires
+        shuffle($cards); // Mélange les cartes
+        return $cards;
     }
 
     public function getCards() {
@@ -208,35 +208,31 @@ class MemoryGame {
     }
     
     public function shuffleCards() {
-        $cardSources = array_map(function($card) {
-            return ['src' => $card->getSrc()];
-        }, $this->cards);
-    
-        $this->cards = $this->mix($cardSources);
+        shuffle($this->cards);
         $this->flipped = [];
         $this->foundPairs = [];
         $this->attempts = 0;
-    }
-    
-    public function getAttempts() {
-        return $this->attempts;
-    }
-
-    public function getFoundPairs() {
-        return $this->foundPairs;
     }
 
     public function getFlipped() {
         return $this->flipped;
     }
 
+    public function getFoundPairs() {
+        return $this->foundPairs;
+    }
+
+    public function getAttempts() {
+        return $this->attempts;
+    }
+    
     public function isGameOver() {
         return count($this->foundPairs) == count($this->cards);
     }
-
+    
     public function getEndMessage() {
         if ($this->isGameOver()) {
-            return "Félicitations ! Vous avez remporté la partie en " . $this->attempts . " tentatives.";
+            return "Félicitations. Vous avez remporté la partie en " . $this->attempts . " tentatives!";
         }
         return "";
     }
@@ -249,11 +245,12 @@ class MemoryGameController {
     public function __construct($cardSources) {
         session_start();
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_game'])) {
-            $sets = (int)str_replace('_sets', '', $_POST['sets']); 
+        if (isset($_POST['new_game'])) {
+            $sets = $_POST['sets'] ?? 3;
+            $sets = (int)str_replace('_sets', '', $sets);
             $this->game = new MemoryGame($cardSources, $sets);
             $_SESSION['memory_game'] = $this->game;
-        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['shake'])) {
+        } elseif (isset($_POST['shake'])) {
             if (isset($_SESSION['memory_game'])) {
                 $this->game = $_SESSION['memory_game'];
                 $this->game->shuffleCards();
