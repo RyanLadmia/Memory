@@ -61,3 +61,31 @@ header {
 .form-container.active {
     display: block;
 }
+
+/* INDEX */
+
+/* Style des cartes */
+/* CSS pour les cartes */
+.card-button {
+    width: 100px; /* Largeur de la carte */
+    height: 150px; /* Hauteur de la carte */
+    background: none; /* Supprimer le fond du bouton */
+    border: none; /* Supprimer la bordure du bouton */
+    padding: 0; /* Supprimer le padding du bouton */
+    display: inline-block; /* Assure que les boutons se comportent correctement */
+    overflow: hidden; /* Empêche le débordement de l'image */
+    position: relative; /* Positionnement relatif pour un positionnement des images */
+}
+
+.card-button img {
+    width: 100%; /* Ajuste la largeur de l'image à la largeur du bouton */
+    height: 100%; /* Ajuste la hauteur de l'image à la hauteur du bouton */
+    object-fit: cover; /* Ajuste l'image pour couvrir le bouton sans déformation */
+}
+
+img{
+    width: 150px;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 20px;
+}

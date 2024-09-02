@@ -2,7 +2,7 @@
 require_once 'php/classes.php';
 
 $cardSources = [
-    ["src" => "assets/medias/geralt.webp"],
+    ["src" => 'assets/medias/geralt.webp'],
     ["src" => 'assets/medias/yennefer.webp'],
     ["src" => 'assets/medias/ciri.webp'],
     ["src" => 'assets/medias/triss.jpeg'],
@@ -16,24 +16,31 @@ $cardSources = [
     ["src" => 'assets/medias/cerys.webp']
 ];
 
+// Verso de mes cartes : 'assets/card_verso.png'
+
+// Initialiser le contrôleur du jeu
 $controller = new MemoryGameController($cardSources);
 
+// Gérer la requête
 $controller->handleRequest();
 
+// Récupérer le jeu pour l'affichage
 $game = $controller->getGame();
 $mixCards = $game->getCards();
+$message = $controller->getMessage();
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
-<?php include 'includes/_head.php'; ?>
-
+<html lang="fr">
+<head>
+    <?php include 'includes/_head.php'; ?>
+</head>
 <body>
 
     <?php include 'includes/_header.php'; ?>
 
     <main>
-        <h2>Bienvenu sur Memory!</h2>
+        <h2>Bienvenue sur Memory!</h2>
         <form method="post" action="index.php">
             <label>Nouvelle partie :</label><br>
             <select name="sets">
@@ -53,18 +60,28 @@ $mixCards = $game->getCards();
         </form>
 
         <form method="post">
+            <input type="submit" name="shake" value="Mélanger les cartes" />
+        </form>
+        
+        <form method="post">
             <div class="Jeux">
                 <?php foreach ($game->getCards() as $index => $card): ?>
                     <?php
                     $isFlipped = in_array($index, $game->getFlipped()) || in_array($index, $game->getFoundPairs());
                     $imgSrc = $isFlipped ? $card->getSrc() : 'assets/medias/card_verso.png';
                     ?>
-                    <button type="submit" name="index" value="<?php echo $index; ?>" style="background: none; border: none;">
+                    <button type="submit" name="index" value="<?php echo $index; ?>" class="card-button">
                         <img src="<?php echo $imgSrc; ?>" alt="Carte">
                     </button>
                 <?php endforeach; ?>
             </div>
         </form>
+
+        <!-- Affichage du message de félicitations si le jeu est terminé -->
+        <?php if ($message): ?>
+            <p><?php echo $message; ?></p>
+        <?php endif; ?>
+
     </main>
 
     <?php include 'includes/_footer.php'; ?>

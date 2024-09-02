@@ -3,182 +3,157 @@
 // Inclu la classe database
 include __DIR__ . '/../includes/_connect.php';
 
-class user{ // REPRESENTE UN UTILISATEUR
+class User {
     private $conn;
 
-    public function __construct(){
-        // Cree une instance de la classe database et établi la connexion a la BDD
+    public function __construct() {
         $database = new Database();
         $this->conn = $database->connect();
     }
 
-        public function register($login, $password) {
-            if (empty($login) || empty($password)) {
-                return "Le login et le mot de passe ne peuvent pas être vides.";
-            }
+    public function register($login, $password) {
+        if (empty($login) || empty($password)) {
+            return "Le login et le mot de passe ne peuvent pas être vides.";
+        }
+
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+        $sqlCheck = "SELECT COUNT(*) FROM users WHERE login = :login";
+        $stmtCheck = $this->conn->prepare($sqlCheck);
+        $stmtCheck->bindParam(':login', $login);
+        $stmtCheck->execute();
+        if ($stmtCheck->fetchColumn() > 0) {
+            return "Ce login est déjà utilisé.";
+        }
+
+        $sql = "INSERT INTO users (login, password) VALUES (:login, :password)";
         
-            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-        
-            // Vérifier si le login existe déjà
-            $sqlCheck = "SELECT COUNT(*) FROM users WHERE login = :login";
-            $stmtCheck = $this->conn->prepare($sqlCheck);
-            $stmtCheck->bindParam(':login', $login);
-            $stmtCheck->execute();
-            if ($stmtCheck->fetchColumn() > 0) {
-                return "Ce login est déjà utilisé.";
-            }
-        
-            $sql = "INSERT INTO users (login, password) VALUES (:login, :password)";
+        try {
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':login', $login);
+            $stmt->bindParam(':password', $hashedPassword);
             
-            try {
-                $stmt = $this->conn->prepare($sql);
-                $stmt->bindParam(':login', $login);
-                $stmt->bindParam(':password', $hashedPassword);
-                
-                if ($stmt->execute()) {
-                    return "Inscription réussie. Vous pouvez maintenant vous connecter.";
-                } else {
-                    // Log error details for debugging
-                    error_log("Failed to execute query: " . implode(" | ", $stmt->errorInfo()));
-                    return "Échec de l'inscription. Veuillez réessayer plus tard.";
-                }
-            } catch (PDOException $e) {
-                return "Erreur : " . $e->getMessage();
+            if ($stmt->execute()) {
+                return "Inscription réussie. Vous pouvez maintenant vous connecter.";
+            } else {
+                error_log("Failed to execute query: " . implode(" | ", $stmt->errorInfo()));
+                return "Échec de l'inscription. Veuillez réessayer plus tard.";
             }
+        } catch (PDOException $e) {
+            return "Erreur : " . $e->getMessage();
+        }
+    }
+
+    public function login($login, $password) {
+        if (empty($login) || empty($password)) {
+            return "Le login et le mot de passe sont obligatoires.";
         }
 
-
-
-        public function login($login, $password) {
-            if (empty($login) || empty($password)) {
-                return "Le login et le mot de passe sont obligatoires.";
-            }
+        $sql = "SELECT id, login, password FROM users WHERE login = :login";
         
-            $sql = "SELECT id, login, password FROM users WHERE login = :login";
+        try {
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':login', $login);
+            $stmt->execute();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user) {
+                if (password_verify($password, $user['password'])) {
+                    $_SESSION['loggedin'] = true;
+                    $_SESSION['userid'] = $user['id'];
+                    $_SESSION['login'] = $user['login'];
+
+                    return "Connexion réussie.";
+                } else {
+                    error_log("Tentative de connexion échouée pour le login: " . htmlspecialchars($login) . " - Mot de passe incorrect.");
+                    return "Mot de passe incorrect.";
+                }
+            } else {
+                error_log("Tentative de connexion échouée pour le login: " . htmlspecialchars($login) . " - Utilisateur non trouvé.");
+                return "Utilisateur non trouvé.";
+            }
+        } catch (PDOException $e) {
+            return "Erreur : " . $e->getMessage();
+        }
+    }
+
+    public function update($login, $password) {
+        if (!isset($_SESSION['login'])) {
+            return "Erreur : Vous devez être connecté pour mettre à jour vos informations.";
+        }
+
+        if (empty($login) || empty($password)) {
+            return "Le login et le mot de passe sont obligatoires.";
+        }
+
+        $checkSql = "SELECT COUNT(*) FROM users WHERE login = :login AND login != :currentLogin";
+        $checkStmt = $this->conn->prepare($checkSql);
+        $checkStmt->bindParam(':login', $login);
+        $checkStmt->bindParam(':currentLogin', $_SESSION['login']);
+        $checkStmt->execute();
+        if ($checkStmt->fetchColumn() > 0) {
+            return "Ce login est déjà utilisé.";
+        }
+
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+        $sql = "UPDATE users SET login = :login, password = :password WHERE login = :currentLogin";
+
+        try {
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':login', $login);
+            $stmt->bindParam(':password', $hashedPassword);
+            $stmt->bindParam(':currentLogin', $_SESSION['login']);
+
+            if ($stmt->execute()) {
+                $_SESSION['login'] = $login;
+
+                return "Informations mises à jour avec succès.";
+            } else {
+                return "Échec de la mise à jour.";
+            }
+        } catch (PDOException $e) {
+            return "Erreur : " . $e->getMessage();
+        }
+    }
+
+    public function delete() {
+        if (!isset($_SESSION['login'])) {
+            return "Erreur : Vous devez être connecté pour supprimer votre compte.";
+        }
+
+        $sql = "DELETE FROM users WHERE login = :login";
+        
+        try {
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':login', $_SESSION['login']);
             
-            try {
-                $stmt = $this->conn->prepare($sql);
-                $stmt->bindParam(':login', $login);
-                $stmt->execute();
-                $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-                if ($user) {
-                    if (password_verify($password, $user['password'])) {
-                        $_SESSION['loggedin'] = true;
-                        $_SESSION['userid'] = $user['id'];
-                        $_SESSION['login'] = $user['login'];
-        
-                        $this->login = $user['login']; 
-        
-                        return "Connexion réussie.";
-                    } else {
-                        // Optionally log the failed login attempt for security monitoring
-                        error_log("Tentative de connexion échouée pour le login: " . htmlspecialchars($login) . " - Mot de passe incorrect.");
-                        return "Mot de passe incorrect.";
-                    }
-                } else {
-                    // Optionally log the failed login attempt for security monitoring
-                    error_log("Tentative de connexion échouée pour le login: " . htmlspecialchars($login) . " - Utilisateur non trouvé.");
-                    return "Utilisateur non trouvé.";
-                }
-            } catch (PDOException $e) {
-                return "Erreur : " . $e->getMessage();
+            if ($stmt->execute()) {
+                session_destroy();
+                return "Compte supprimé avec succès.";
+            } else {
+                return "Échec de la suppression du compte.";
             }
+        } catch (PDOException $e) {
+            return "Erreur : " . $e->getMessage();
         }
+    }
 
-        
-
-        public function update($login, $password) {
-            if (!isset($_SESSION['login'])) {
-                return "Erreur : Vous devez être connecté pour mettre à jour vos informations.";
-            }
-        
-            if (empty($login) || empty($password)) {
-                return "Le login et le mot de passe sont obligatoires.";
-            }
-        
-            // Check if the new login is already taken
-            $checkSql = "SELECT COUNT(*) FROM users WHERE login = :login AND login != :currentLogin";
-            $checkStmt = $this->conn->prepare($checkSql);
-            $checkStmt->bindParam(':login', $login);
-            $checkStmt->bindParam(':currentLogin', $_SESSION['login']);
-            $checkStmt->execute();
-            if ($checkStmt->fetchColumn() > 0) {
-                return "Ce login est déjà utilisé.";
-            }
-        
-            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-        
-            $sql = "UPDATE users SET login = :login, password = :password WHERE login = :currentLogin";
-        
-            try {
-                $stmt = $this->conn->prepare($sql);
-                $stmt->bindParam(':login', $login);
-                $stmt->bindParam(':password', $hashedPassword);
-                $stmt->bindParam(':currentLogin', $_SESSION['login']);
-        
-                if ($stmt->execute()) {
-                    $_SESSION['login'] = $login;
-        
-                    return "Informations mises à jour avec succès.";
-                } else {
-                    return "Échec de la mise à jour.";
-                }
-            } catch (PDOException $e) {
-                return "Erreur : " . $e->getMessage();
-            }
-        }
-
-
-
-        public function delete() {
-            if (!isset($_SESSION['login'])) {
-                return "Erreur : Vous devez être connecté pour supprimer votre compte.";
-            }
-        
-            $sql = "DELETE FROM users WHERE login = :login";
-            
-            try {
-                $stmt = $this->conn->prepare($sql);
-                $stmt->bindParam(':login', $_SESSION['login']);
-                
-                if ($stmt->execute()) {
-                    session_destroy();
-                    return "Compte supprimé avec succès.";
-                } else {
-                    return "Échec de la suppression du compte.";
-                }
-            } catch (PDOException $e) {
-                return "Erreur : " . $e->getMessage();
-            }
-        }
-
-
-
-        public function disconnect() {
-            session_destroy();
-            $this->login = null;
-            
-        }
-        
+    public function disconnect() {
+        session_destroy();
+        $this->login = null;
+    }
 }
-
 
 class Card {
     private $src;
-    private $id;
 
     public function __construct($src) {
         $this->src = $src;
-        $this->id = uniqid();
     }
 
     public function getSrc() {
         return $this->src;
-    }
-
-    public function getId() {
-        return $this->id;
     }
 }
 
@@ -193,7 +168,7 @@ class MemoryGame {
     }
     
     private function initializeGame($cardSources, $sets) {
-        $cardSources = array_slice($cardSources, 0, $sets);
+        $cardSources = array_slice($cardSources, 0, $sets); // Limite le nombre de paires
         $this->cards = $this->mix($cardSources);
     }
 
@@ -202,7 +177,7 @@ class MemoryGame {
         foreach ($cardSources as $src) {
             $cardList[] = new Card($src['src']);
         }
-        $shuffledCards = array_merge($cardList, $cardList);
+        $shuffledCards = array_merge($cardList, $cardList); 
         shuffle($shuffledCards);
         return $shuffledCards;
     }
@@ -231,11 +206,18 @@ class MemoryGame {
             $this->flipped = [];
         }
     }
-
-    public function getFlipped() {
-        return $this->flipped;
+    
+    public function shuffleCards() {
+        $cardSources = array_map(function($card) {
+            return ['src' => $card->getSrc()];
+        }, $this->cards);
+    
+        $this->cards = $this->mix($cardSources);
+        $this->flipped = [];
+        $this->foundPairs = [];
+        $this->attempts = 0;
     }
-
+    
     public function getAttempts() {
         return $this->attempts;
     }
@@ -243,37 +225,61 @@ class MemoryGame {
     public function getFoundPairs() {
         return $this->foundPairs;
     }
+
+    public function getFlipped() {
+        return $this->flipped;
+    }
+
+    public function isGameOver() {
+        return count($this->foundPairs) == count($this->cards);
+    }
+
+    public function getEndMessage() {
+        if ($this->isGameOver()) {
+            return "Félicitations ! Vous avez remporté la partie en " . $this->attempts . " tentatives.";
+        }
+        return "";
+    }
 }
 
 class MemoryGameController {
     private $game;
+    private $message;
 
     public function __construct($cardSources) {
         session_start();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_game'])) {
-            $sets = (int)str_replace('_sets', '', $_POST['sets']);
+            $sets = (int)str_replace('_sets', '', $_POST['sets']); 
             $this->game = new MemoryGame($cardSources, $sets);
             $_SESSION['memory_game'] = $this->game;
-        } elseif (!isset($_SESSION['memory_game'])) {
-            $this->game = new MemoryGame($cardSources, 3);
-            $_SESSION['memory_game'] = $this->game;
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['shake'])) {
+            if (isset($_SESSION['memory_game'])) {
+                $this->game = $_SESSION['memory_game'];
+                $this->game->shuffleCards();
+                $_SESSION['memory_game'] = $this->game;
+            }
         } else {
-            $this->game = $_SESSION['memory_game'];
+            $this->game = isset($_SESSION['memory_game']) ? $_SESSION['memory_game'] : new MemoryGame($cardSources, 3);
         }
+
+        $this->message = $this->game->getEndMessage();
     }
 
     public function handleRequest() {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['index'])) {
-            $this->game->flipCard((int)$_POST['index']);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['index'])) {
+            $index = (int)$_POST['index'];
+            $this->game->flipCard($index);
             $_SESSION['memory_game'] = $this->game;
+            $this->message = $this->game->getEndMessage();
         }
     }
 
     public function getGame() {
         return $this->game;
     }
+
+    public function getMessage() {
+        return $this->message;
+    }
 }
-
-?>
-
