@@ -163,6 +163,7 @@ class user{ // REPRESENTE UN UTILISATEUR
         
 }
 
+
 class Card {
     private $src;
     private $id;
@@ -181,19 +182,18 @@ class Card {
     }
 }
 
-
-
 class MemoryGame {
     private $cards = [];
     private $flipped = [];
     private $foundPairs = [];
     private $attempts = 0;
 
-    public function __construct($cardSources) {
-        $this->initializeGame($cardSources);
+    public function __construct($cardSources, $sets) {
+        $this->initializeGame($cardSources, $sets);
     }
-
-    private function initializeGame($cardSources) {
+    
+    private function initializeGame($cardSources, $sets) {
+        $cardSources = array_slice($cardSources, 0, $sets);
         $this->cards = $this->mix($cardSources);
     }
 
@@ -202,7 +202,7 @@ class MemoryGame {
         foreach ($cardSources as $src) {
             $cardList[] = new Card($src['src']);
         }
-        $shuffledCards = array_merge($cardList, $cardList); 
+        $shuffledCards = array_merge($cardList, $cardList);
         shuffle($shuffledCards);
         return $shuffledCards;
     }
@@ -212,9 +212,11 @@ class MemoryGame {
     }
 
     public function flipCard($index) {
-        if (!in_array($index, $this->flipped)) {
-            $this->flipped[] = $index;
+        if (in_array($index, $this->foundPairs)) {
+            return;
         }
+
+        $this->flipped[] = $index;
 
         if (count($this->flipped) == 2) {
             $this->attempts++;
@@ -226,9 +228,12 @@ class MemoryGame {
                 $this->foundPairs[] = $this->flipped[1];
             }
 
-            // Réinitialiser les cartes retournées
             $this->flipped = [];
         }
+    }
+
+    public function getFlipped() {
+        return $this->flipped;
     }
 
     public function getAttempts() {
@@ -240,14 +245,18 @@ class MemoryGame {
     }
 }
 
-
 class MemoryGameController {
     private $game;
 
     public function __construct($cardSources) {
         session_start();
-        if (!isset($_SESSION['memory_game'])) {
-            $this->game = new MemoryGame($cardSources);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_game'])) {
+            $sets = (int)str_replace('_sets', '', $_POST['sets']);
+            $this->game = new MemoryGame($cardSources, $sets);
+            $_SESSION['memory_game'] = $this->game;
+        } elseif (!isset($_SESSION['memory_game'])) {
+            $this->game = new MemoryGame($cardSources, 3);
             $_SESSION['memory_game'] = $this->game;
         } else {
             $this->game = $_SESSION['memory_game'];
@@ -257,6 +266,7 @@ class MemoryGameController {
     public function handleRequest() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['index'])) {
             $this->game->flipCard((int)$_POST['index']);
+            $_SESSION['memory_game'] = $this->game;
         }
     }
 
@@ -265,6 +275,5 @@ class MemoryGameController {
     }
 }
 
-
-
 ?>
+
