@@ -21,9 +21,12 @@ $scores = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php include '../includes/_head.php'; ?>
 
 <body class="classement">
+
     <?php include '../includes/_header.php'; ?>
 
-    <h3>Top Scores</h3>
+    <br><br><br>
+
+    <h3>Top Scores :</h3>
     <table class="cla1">
         <tr>
             <th>Pseudonyme</th>
