@@ -263,14 +263,48 @@ class MemoryGameController {
         $this->message = $this->game->getEndMessage();
     }
 
+    private function saveScore() {
+        if (!$this->game->isGameOver()) {
+            return;
+        }
+    
+        $userId = $_SESSION['userid'] ?? null;
+        $login = $_SESSION['login'] ?? null;
+    
+        if ($userId && $login) {
+            $attempts = $this->game->getAttempts();
+            $pairs = count($this->game->getFoundPairs()) / 2;
+            $score = $pairs > 0 ? $attempts / $pairs : 0;
+    
+            $database = new Database();
+            $conn = $database->connect();
+    
+            $sql = "INSERT INTO scores (user_id, login, attempts, pairs, score) VALUES (:user_id, :login, :attempts, :pairs, :score)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':user_id', $userId);
+            $stmt->bindParam(':login', $login);
+            $stmt->bindParam(':attempts', $attempts);
+            $stmt->bindParam(':pairs', $pairs);
+            $stmt->bindParam(':score', $score);
+            $stmt->execute();
+        }
+    }
+    
+
+
     public function handleRequest() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['index'])) {
             $index = (int)$_POST['index'];
             $this->game->flipCard($index);
             $_SESSION['memory_game'] = $this->game;
             $this->message = $this->game->getEndMessage();
+    
+            if ($this->game->isGameOver()) {
+                $this->saveScore(); // Ajout de l'appel pour sauvegarder le score
+            }
         }
     }
+    
 
     public function getGame() {
         return $this->game;
@@ -279,4 +313,6 @@ class MemoryGameController {
     public function getMessage() {
         return $this->message;
     }
+
+    
 }

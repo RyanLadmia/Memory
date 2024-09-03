@@ -81,6 +81,7 @@ header {
     width: 100%; /* Ajuste la largeur de l'image à la largeur du bouton */
     height: 100%; /* Ajuste la hauteur de l'image à la hauteur du bouton */
     object-fit: cover; /* Ajuste l'image pour couvrir le bouton sans déformation */
+    
 }
 
 
@@ -90,5 +91,14 @@ img{
     width: 150px;
     height: 250px;
     object-fit: cover;
-    border-radius: 20px;
+    border-radius: 10px;
+    transform: rotateY(180deg);
+    transition: transform 0.6s;
+    overflow: hidden;
+    border: none;
+    background: none;
+    padding: 0;
+    display: inline-block;
+    position: relative;
+    
 }

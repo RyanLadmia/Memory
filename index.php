@@ -1,5 +1,6 @@
 <?php
 require_once 'php/classes.php';
+session_start();
 
 $cardSources = [
     ["src" => 'assets/medias/geralt.webp'],
@@ -32,16 +33,16 @@ $message = $controller->getMessage();
 
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <?php include 'includes/_head.php'; ?>
-</head>
+
+    <?php include './includes/_head.php'; ?>
+
 <body>
 
-    <?php include 'includes/_header.php'; ?>
+    <?php include './includes/_header.php'; ?>
 
     <main>
         <h2>Bienvenue sur Memory!</h2>
-        <form method="post" action="index.php">
+        <form method="post" action="./index.php">
             <label>Nouvelle partie :</label><br>
             <select name="sets">
                 <option value="">Choisissez un nombre de paires</option>
@@ -68,7 +69,7 @@ $message = $controller->getMessage();
                 <?php foreach ($game->getCards() as $index => $card): ?>
                     <?php
                     $isFlipped = in_array($index, $game->getFlipped()) || in_array($index, $game->getFoundPairs());
-                    $imgSrc = $isFlipped ? $card->getSrc() : 'assets/medias/card_verso.png';
+                    $imgSrc = $isFlipped ? $card->getSrc() : './assets/medias/card_verso.png';
                     ?>
                     <button type="submit" name="index" value="<?php echo $index; ?>" class="card-button">
                         <img src="<?php echo $imgSrc; ?>" alt="Carte">

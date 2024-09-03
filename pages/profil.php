@@ -1,6 +1,7 @@
 <?php
-require_once '../php/classes.php';
 session_start();
+
+require_once '../php/classes.php';
 
 $msg = '';
 $isLoggedIn = isset($_SESSION['login']) && !empty($_SESSION['login']);
