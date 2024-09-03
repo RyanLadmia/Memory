@@ -5,7 +5,6 @@ body {
     padding: 0;
     font-family: Arial, sans-serif;
     line-height: 1.6;
-    background-color: white;
 }
 main{
     padding-top: 100px;
@@ -54,15 +53,52 @@ header {
 /* FOOTER */
 
 
-/* PROFIL (!!! ATTENTION A NOMMER LES CLASSES DIFFEREMENT DE PROFIL) */
-.form-container {
-    display: none;
-}
-.form-container.active {
-    display: block;
-}
+
 
 /* INDEX */
+
+.accueil{
+    background-image: url(../medias/index_back.jpg);
+    background-size: 100%;
+    background-attachment: fixed;
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+form {
+    background-color: rgba(128, 128, 128, 0.7); /* Gris avec opacité */
+    border-radius: 8px; /* Bord arrondi pour les formulaires */
+    padding: 1rem;
+    width: 800px; /* Largeur fixe pour les formulaires */
+    margin: 15px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+form select, 
+form input[type="submit"] {
+    width: 50%; /* Largeur complète pour les éléments de formulaire */
+    margin-bottom: 2rem; /* Espacement entre les éléments */
+}
+
+form input[type="submit"] {
+    background-color: #333; /* Couleur de fond pour le bouton */
+    color: white; /* Couleur du texte du bouton */
+    border: none; /* Enlever la bordure du bouton */
+    padding: 0.5rem; /* Espacement interne du bouton */
+    cursor: pointer; /* Changer le curseur au survol */
+}
+
+form input[type="submit"]:hover {
+    background-color: #555; /* Changer la couleur au survol */
+}
 
 /* Style des cartes */
 /* CSS pour les cartes */
@@ -84,9 +120,6 @@ header {
     
 }
 
-
-
-
 img{
     width: 150px;
     height: 250px;
@@ -100,5 +133,227 @@ img{
     padding: 0;
     display: inline-block;
     position: relative;
-    
+}
+
+h2{
+    color: white;
+    margin-left: 30px;
+}
+
+.ind1{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    color: white;
+}
+.ind2{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+.ind3{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+p{
+    color: white;
+}
+
+
+
+/* CLASSEMENT.PHP */
+
+.classement{
+    background-image: url(../medias/classement_back.jpg);
+    background-size: 100%;
+    background-position-y: -100px;
+    background-attachment: fixed;
+}
+
+table {
+    background-color: rgba(54, 221, 250, 0.5);
+    margin-top: 80px;
+    margin-left: 80px;
+    padding: 8px;
+    border-radius: 20px;
+    width: 400px;
+}
+
+
+/* PROFIL */
+
+.profil{
+    background-image: url(../medias/connect_back.webp);
+    background-size: 100%;
+    background-attachment: fixed;
+}
+.form-container {
+    display: none;
+}
+.form-container.active {
+    display: block;
+}
+
+.prof1{
+    width: 170px;
+}
+
+#co{
+    background-color: #333; /* Couleur de fond pour le bouton */
+    color: white; /* Couleur du texte du bouton */
+    border: none; /* Enlever la bordure du bouton */
+    padding: 0.5rem; /* Espacement interne du bouton */
+    cursor: pointer;
+}
+#co:hover{
+    background-color: #555;
+}
+#regis{
+    background-color: #333; /* Couleur de fond pour le bouton */
+    color: white; /* Couleur du texte du bouton */
+    border: none; /* Enlever la bordure du bouton */
+    padding: 0.5rem; /* Espacement interne du bouton */
+    cursor: pointer;
+}
+#regis:hover{
+    background-color: #555;
+}
+
+.prof2{
+    width: 200px;
+    color: white;
+}
+.prof2 input{
+    height: 35px;
+    width: 180px;
+}
+
+#p2co{
+    background-color: #333; /* Couleur de fond pour le bouton */
+    color: white; /* Couleur du texte du bouton */
+    border: none; /* Enlever la bordure du bouton */
+    padding: 0.5rem; /* Espacement interne du bouton */
+    cursor: pointer;
+    margin-left: 50px;
+}
+#p2co:hover{
+    background-color: #555;
+}
+
+.prof3{
+    width: 200px;
+    color: white;
+}
+.prof3 input{
+    height: 35px;
+    width: 180px;
+}
+
+#p3regis{
+    background-color: #333; /* Couleur de fond pour le bouton */
+    color: white; /* Couleur du texte du bouton */
+    border: none; /* Enlever la bordure du bouton */
+    padding: 0.5rem; /* Espacement interne du bouton */
+    cursor: pointer;
+    margin-left: 60px;
+}
+#p3regis:hover{
+    background-color: #555;
+}
+
+.prof4{
+    width: 200px;
+    color: white;
+}
+.prof4 input{
+    height: 35px;
+    width: 180px;
+}
+
+#p4up{
+    background-color: #333; /* Couleur de fond pour le bouton */
+    color: white; /* Couleur du texte du bouton */
+    border: none; /* Enlever la bordure du bouton */
+    padding: 0.5rem; /* Espacement interne du bouton */
+    cursor: pointer;
+    margin-left: 50px;
+}
+#p4up:hover{
+    background-color: #555;
+}
+
+.prof5{
+    width: 200px;
+    color: white;
+}
+.prof5 input{
+    height: 35px;
+    width: 180px;
+}
+
+#p5deco{
+    background-color: #333; /* Couleur de fond pour le bouton */
+    color: white; /* Couleur du texte du bouton */
+    border: none; /* Enlever la bordure du bouton */
+    padding: 0.5rem; /* Espacement interne du bouton */
+    cursor: pointer;
+    margin-left: 40px;
+}
+#p5deco:hover{
+    background-color: #555;
+}
+
+.prof6{
+    width: 200px;
+    color: white;
+}
+.prof6 input{
+    height: 35px;
+    width: 180px;
+}
+
+#p6suppr{
+    background-color: #333; /* Couleur de fond pour le bouton */
+    color: white; /* Couleur du texte du bouton */
+    border: none; /* Enlever la bordure du bouton */
+    padding: 0.5rem; /* Espacement interne du bouton */
+    cursor: pointer;
+    margin-left: 20px;
+}
+#p6suppr:hover{
+    background-color: #555;
+}
+
+.prof7{
+    width: 200px;
+    color: white;
+}
+.prof7 input{
+    height: 35px;
+    width: 180px;
+}
+
+#p7yes{
+    background-color: #333; /* Couleur de fond pour le bouton */
+    color: white; /* Couleur du texte du bouton */
+    border: none; /* Enlever la bordure du bouton */
+    padding: 0.5rem; /* Espacement interne du bouton */
+    cursor: pointer;
+    margin-left: 60px;
+}
+#p7yes:hover{
+    background-color: #555;
+}
+
+#p7no{
+    background-color: #333; /* Couleur de fond pour le bouton */
+    color: white; /* Couleur du texte du bouton */
+    border: none; /* Enlever la bordure du bouton */
+    padding: 0.5rem; /* Espacement interne du bouton */
+    cursor: pointer;
+}
+#p7no:hover{
+    background-color: #555;
 }

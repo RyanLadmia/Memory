@@ -35,14 +35,15 @@ $message = $controller->getMessage();
 
     <?php include './includes/_head.php'; ?>
 
-<body>
+<body class="accueil">
 
     <?php include './includes/_header.php'; ?>
 
     <main>
         <h2>Bienvenue sur Memory!</h2>
-        <form method="post" action="./index.php">
-            <label>Nouvelle partie :</label><br>
+        <section>
+        <form class="ind1" method="post" action="./index.php">
+            <label>Nouvelle partie :</label>
             <select name="sets">
                 <option value="">Choisissez un nombre de paires</option>
                 <option value="3_sets">3 paires</option>
@@ -55,15 +56,15 @@ $message = $controller->getMessage();
                 <option value="10_sets">10 paires</option>
                 <option value="11_sets">11 paires</option>
                 <option value="12_sets">12 paires</option>
-            </select><br>
+            </select>
             <input type="submit" name="new_game" value="Lancer la partie">
-        </form>
+        </form><br>
 
-        <form method="post">
-            <input type="submit" name="shake" value="Mélanger les cartes" />
-        </form>
+        <form class="ind2" method="post">
+            <input type="submit" name="shake" value="Mélanger les cartes">
+        </form><br>
         
-        <form method="post">
+        <form class="ind3" method="post">
             <div class="Jeux">
                 <?php foreach ($game->getCards() as $index => $card): ?>
                     <?php
@@ -76,6 +77,7 @@ $message = $controller->getMessage();
                 <?php endforeach; ?>
             </div>
         </form>
+        </section>
 
         <!-- Affichage du message de félicitations si le jeu est terminé -->
         <?php if ($message): ?>

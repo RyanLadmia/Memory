@@ -20,13 +20,13 @@ $scores = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <?php include '../includes/_head.php'; ?>
 
-<body>
+<body class="classement">
     <?php include '../includes/_header.php'; ?>
 
-    <h1>Top Scores</h1>
-    <table>
+    <h3>Top Scores</h3>
+    <table class="cla1">
         <tr>
-            <th>Login</th>
+            <th>Pseudonyme</th>
             <th>Score</th>
         </tr>
         <?php foreach ($scores as $score): ?>

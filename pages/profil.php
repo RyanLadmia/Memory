@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <?php include '../includes/_head.php'; ?>
 
-<body>
+<body class="profil">
 
 <?php include '../includes/_header.php'; ?>
 
@@ -86,21 +86,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php if (!$isLoggedIn): ?>
         <div>
             <!-- Buttons for login and register -->
-            <form method="post">
-                <button type="submit" name="show_login" <?php echo $showForm === 'login' ? 'disabled' : ''; ?>>Connexion</button>
-                <button type="submit" name="show_register" <?php echo $showForm === 'register' ? 'disabled' : ''; ?>>Inscription</button>
+            <form class="prof1" method="post">
+                <button id="co" type="submit" name="show_login" <?php echo $showForm === 'login' ? 'disabled' : ''; ?>>Connexion</button>
+                <button id="regis" type="submit" name="show_register" <?php echo $showForm === 'register' ? 'disabled' : ''; ?>>Inscription</button>
             </form>
 
             <!-- Login form -->
             <?php if ($showForm === 'login'): ?>
                 <div id="login-form" class="form-container active">
                     <h2>Connexion</h2>
-                    <form method="post">
+                    <form  class="prof2" method="post">
                         <label for="login">Pseudonyme</label><br>
                         <input type="text" name="login" placeholder="Login" required><br><br>
                         <label for="password">Mot de passe</label><br>
                         <input type="password" name="password" placeholder="Mot de passe" required><br><br>
-                        <button type="submit" name="login_submit">Se connecter</button>
+                        <button id="p2co" type="submit" name="login_submit">Se connecter</button>
                     </form>
                 </div>
             <?php endif; ?>
@@ -109,12 +109,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <?php if ($showForm === 'register'): ?>
                 <div id="register-form" class="form-container active">
                     <h2>Inscription</h2>
-                    <form method="post">
+                    <form class="prof3" method="post">
                         <label for="login">Pseudonyme</label><br>
                         <input type="text" name="login" placeholder="Login" required><br><br>
                         <label for="password">Mot de passe</label><br>
                         <input type="password" name="password" placeholder="Mot de passe" required><br><br>
-                        <button type="submit" name="register_button">S'inscrire</button>
+                        <button id="p3regis" type="submit" name="register_button">S'inscrire</button>
                     </form>
                 </div>
             <?php endif; ?>
@@ -123,28 +123,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php else: ?>
         <div>
             <h2>Bienvenue, <?= htmlspecialchars($_SESSION['login']); ?></h2>
-            <form method="post">
+            <form class="prof4" method="post">
                 <label for="login">Nouveau Pseudonyme</label><br>
                 <input type="text" name="login" placeholder="Login" required><br><br>
                 <label for="password">Nouveau Mot de passe</label><br>
                 <input type="password" name="password" placeholder="Mot de passe" required><br><br>
-                <button type="submit" name="update_button">Mettre à jour</button>
+                <button id="p4up" type="submit" name="update_button">Mettre à jour</button>
             </form><br>
 
-            <form method="post">
-                <button type="submit" name="logout_button">Se déconnecter</button>
+            <form class="prof5" method="post">
+                <button id="p5deco" type="submit" name="logout_button">Se déconnecter</button>
             </form><br>
 
             <!-- Bouton de suppression de compte -->
             <?php if (!$showConfirmationButtons): ?>
-                <form method="post">
-                    <button type="submit" name="delete_button">Supprimer mon compte</button>
+                <form class="prof6" method="post">
+                    <button id="p6suppr" type="submit" name="delete_button">Supprimer mon compte</button>
                 </form>
             <?php else: ?>
-                <form method="post">
+                <form class="prof7" method="post">
                     <p>Êtes-vous sûr de vouloir supprimer votre compte ?</p>
-                    <button type="submit" name="confirm_delete">Oui</button>
-                    <button type="submit" name="cancel_delete">Non</button>
+                    <button id="p7yes" type="submit" name="confirm_delete">Oui</button>
+                    <button id="p7no" type="submit" name="cancel_delete">Non</button>
                 </form>
             <?php endif; ?>
         </div>
