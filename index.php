@@ -1,6 +1,5 @@
 <?php
 require_once 'php/classes.php';
-session_start();
 
 $cardSources = [
     ["src" => 'assets/medias/geralt.webp'],

@@ -1,5 +1,4 @@
 <?php
-session_start();
 
 // Inclure la connexion à la base de données
 include '../includes/_connect.php';
@@ -20,7 +19,7 @@ $scores = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html lang="fr">
 
     <?php include '../includes/_head.php'; ?>
-    
+
 <body>
     <?php include '../includes/_header.php'; ?>
 
